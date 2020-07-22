@@ -9,6 +9,6 @@ The Z80 Digital Clock is a culmination of my many years messing around with micr
 - [X] Basic Functionality (ROM and CPU)
 - [X] 8255 Peripheral Chip
 - [X] 8253 Counter/Timer
-- [ ] Code to write to Display
-- [ ] Clock Routine
+- [ ] Write Display Sub Routine
+- [ ] Clock Sub Routine
 - [ ] Buttons to Set time
