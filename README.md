@@ -5,13 +5,16 @@ The Z80 Digital Clock is a culmination of my many years messing around with micr
 
 ## To Do: 
 - [X] Clock Display
+- [X] Clock Display PCB
 - [X] Reset Circuit
 - [X] Basic Functionality (ROM and CPU)
 - [X] 8255 Peripheral Chip
 - [X] 8253 Counter/Timer
 - [ ] Write Display Sub Routine
 - [ ] Clock Sub Routine
-- [ ] Buttons to Set time
+- [X] Buttons to Set time
+- [ ] Sub routine for button input
+- [ ] Z80 Clock PCB
 
 ## Images:
 
