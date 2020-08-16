@@ -1,0 +1,49 @@
+#TARGET ROM
+#CODE EEPROM, $0000, $0800
+
+_8253 equ $2000  ; memory location of 8253
+
+.org $0000
+  
+MAIN:
+  ld A, $00  
+
+  ld HL, _8253 + $0003  ; 8253 Mode Word Register
+  ld (HL), $34  ; Counter 0 Mode 2
+  ld (HL), $74  ; Counter 1 Mode 2
+
+  ld HL, $3003  ; 8255 Data Word Register
+  ld (HL), $80  ; Set port A, B, and C Output Mode 0
+
+  ld HL, _8253  ; Counter 0 Count Register
+  ld (HL), $40  ; LSB
+  ld (HL), $9C  ; MSB
+
+  ld HL, _8253 + $0001  ; Counter 1 Count Register
+  ld (HL), $64  ; LSB
+  ld (HL), $00  ; MSB
+
+  ld HL, $3000  ; 8255 Port A
+
+LOOP:
+  ld (HL), A
+  jp LOOP
+
+.org $0066
+
+NMI:
+  ADD $01
+  ld B, $0A
+  cp B
+  JR Z, _IFCOUNT 
+  jp LOOP
+
+_IFCOUNT:
+  ld A, $00
+  jp LOOP
+
+end
+
+
+total time: 0.0010 sec.
+no errors

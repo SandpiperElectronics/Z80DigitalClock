@@ -1,0 +1,48 @@
+;  Title: One Digit 7-Segment Upward Count
+;  Author: Luke LaCasse
+;  Description: Program counts up to count value and ouputs value to a 7-Segment Display
+
+#target ROM
+#code EEPROM, 0000h, 0800h
+
+.org $0000
+
+RAM equ $1000
+_8253 equ $2000
+_8255 equ $3000
+C0_MODE2 equ $34
+C1_MODE2 equ $74
+C2_MODE2 equ $C4
+_ENDCNT equ $09  ; Count Value, determines count to reset back to zero
+
+INIT:
+  ld SP, RAM  ; set stack to point at the begining of SRAM
+
+  ld HL, _8253 + $0003  ; points to 8253 Control Word Register
+  ld (HL), C0_MODE2  ; set counter 0 to mode 2
+  ld (HL), C1_MODE2  ; set counter 1 to mode 2
+  ld (HL), C2_MODE2  ; set counter 2 to mode 2
+
+  ld HL, _8253  ; points to 8253 Load Counter 0
+  ld (HL), $40  ; set counter 0 to divide by 40000, 100 Hz Clock w/ 4Mhz Input
+  ld (HL), $9C
+
+  ld HL, _8253 + $0001  ; points to 8253 Load Counter 1
+  ld (HL), $64  ; set counter 1 to divide by 100, 1 Hz Output w/ 100Hz CLK0 Input
+  ld (HL), $00
+
+  ld HL, _8255 + $0003  ; points to 8255 Control Register
+  ld (HL), $80  ; Set Port A, B, and C to Ouput, both Mode 0
+  ld HL, _8255  ; 8255 Port A
+
+LOOP:
+  ld (HL), $01  ; Write Accumulator to Port A
+  jp LOOP
+
+.org $0066  ; NMI Procedure
+
+NMI:
+  ld (HL), $02  ; Write Accumulator to Port A
+  jp LOOP
+
+end

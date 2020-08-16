@@ -1,0 +1,20 @@
+#target ROM
+#code EEPROM, 0000h, 0800h
+
+CONFIG::
+  ld HL, $F003
+  ld B, $80
+  ld (HL), B
+  ld HL, $F000
+  ld A, $00
+  ld B, $01
+  ld DE, $1000
+
+MAIN::
+  ld (DE), A
+  ld A, (DE)
+  ld (HL), A
+  ADD A, B
+  jp MAIN
+
+end

@@ -1,0 +1,16 @@
+#target ROM
+#code EEPROM, 0000h, 0800h
+
+LCD::
+  ld HL, $E000  ; LCD is at memory location $E000, LCD Register to Instruction Input
+  ld (HL), $30  ; Function set 8-bit mode, 2 lines, 5x7 dots format
+  ld (HL), $08  ; Turn display off
+  ld (HL), $0F  ; Turn display on
+  ld (HL), $06  ; Set mode to increment address by 1 and shift to right when RAM written
+  ld HL, $E001  ; set LCD register to Data Input
+  ld (HL), $53  ; write 'S'
+  ld (HL), $53  ; write 'S'
+  ld (HL), $53  ; write 'S'
+  ld (HL), $53  ; write 'S'
+  ld (HL), $53  ; write 'S'
+  ld (HL), $53  ; write 'S'
