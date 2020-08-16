@@ -12,3 +12,8 @@ The Z80 Digital Clock is a culmination of my many years messing around with micr
 - [ ] Write Display Sub Routine
 - [ ] Clock Sub Routine
 - [ ] Buttons to Set time
+
+##Images:
+
+###Z80 Clock Schematic
+![Image of Clock Schematic](https://raw.githubusercontent.com/Sandpiper131/Z80DigitalClock/master/Images/Z80%20Digital%20Clock%20Schematic.png)
