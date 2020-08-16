@@ -17,3 +17,15 @@ The Z80 Digital Clock is a culmination of my many years messing around with micr
 
 ### Z80 Clock Schematic
 ![Image of Clock Schematic](https://raw.githubusercontent.com/Sandpiper131/Z80DigitalClock/master/Images/Z80%20Digital%20Clock%20Schematic.png)
+
+### 7 Segment Peripheral Schematic
+![Image of 7 Segment Peripheral Schematic](https://raw.githubusercontent.com/Sandpiper131/Z80DigitalClock/master/Images/Clock%20Display%20Schematic.png)
+
+### 7 Segment Peripheral Board Design
+![Image of 7 Sedment Peripheral PCB Design](https://raw.githubusercontent.com/Sandpiper131/Z80DigitalClock/master/Images/Clock%20Display%20Board.png)
+
+### 7 Segment PCB and Z80 Clock
+![Image of 7 Segment PCB and Z80 Clock](https://raw.githubusercontent.com/Sandpiper131/Z80DigitalClock/master/Images/Clock%20w%3A%20Display%20PCB%20(7%3A14%3A20).JPG)
+
+### 7 Segments in the Dark
+![Image of 7 Segments in the Dark](https://raw.githubusercontent.com/Sandpiper131/Z80DigitalClock/master/Images/7%20Segment%20at%20Night%20(4%3A5%3A20).JPG)
