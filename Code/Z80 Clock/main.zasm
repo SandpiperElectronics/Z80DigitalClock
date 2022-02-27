@@ -1,0 +1,123 @@
+#target ROM
+#code EEPROM, $0, * 
+
+NMIPTR equ $0066
+
+_ROM equ $0000
+_RAM equ $1000
+
+; Variables
+TIME_MS equ $1000
+TIME_SEC equ $1003
+TIME_MIN equ $1002
+TIME_HR equ $1001
+
+ 
+.org $0000
+RESET:
+  ld SP, _RAM + $0FFF  ; Stack Located at top
+                       ; of RAM
+
+  ld b, $82            ; Set 8255 PPI Mode 2
+  call PPIMODESET      ; Mode 2 | PA:OUT, PB:IN
+                       ;        | PC:[OUT][OUT] 
+
+  ld b, $34  ; Counter 0 Mode 2
+  call CTWCW
+  ld b, $74  ; Counter 1 Mode 2
+  call CTWCW
+
+  ld bc, $9c40 ; Load Counter 0 with 40000
+  call CT0LCV
+
+  ld bc, $0064 ; Load Counter 1 with 100
+  call CT1LCV
+
+  ld a, 0
+  ld (TIME_MS), a
+  ld (TIME_SEC), a
+  ld (TIME_MIN), a
+  ld (TIME_HR), a
+
+  call BLANK_LLIO      ; Blank LLIO Display
+  jp MAIN 
+
+.org $0066 
+INC_MS:
+  ex af,af'
+  exx
+  ld hl, TIME_MS
+  inc (hl)         ; Increment time by 1ms 
+  ld a, (hl)
+  ld b, a
+  ld a, 100
+  cp b
+  jr nz, NO_MS    ; Check if ms = 100
+  ld (hl), $00
+  call INC_SEC
+NO_MS:
+  exx
+  ex af, af'
+  reti
+ 
+INC_SEC:
+  ld hl, TIME_SEC
+  ld a, (hl)
+  inc a        
+  daa
+  ld (hl), a       ; Increment Seconds and Store
+  ld b, a 
+  ld a, $60
+  cp b
+  jr nz, NO_SEC   ; Check if seconds = 60 
+  ld (hl), 0
+  call INC_MIN
+NO_SEC:
+  ret
+
+INC_MIN:
+  ld hl, TIME_MIN
+  ld a, (hl)
+  inc a
+  daa
+  ld (hl), a
+  ld b, a
+  ld a, $60
+  cp b
+  jr nz, NO_MIN 
+  ld (hl), $00
+  call INC_HR
+NO_MIN:
+  ret
+
+INC_HR:
+  ld hl, TIME_HR
+  ld a, (hl)
+  inc a
+  daa
+  ld (hl), a
+  ld b, a
+  ld a, $24
+  cp b
+  jr nz, NO_HR
+  ld (hl), $00
+NO_HR
+  ret
+  
+
+
+.org $0200
+MAIN:
+  ld hl, TIME_SEC  
+  call MBWR_LLIO 
+  jp MAIN
+
+
+
+
+#include "./driver_ppi_8255.zasm"
+#include "./driver_82c53.zasm"
+#include "./driver_llio.zasm"
+
+end
+

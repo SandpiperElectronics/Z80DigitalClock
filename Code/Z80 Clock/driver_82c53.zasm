@@ -1,0 +1,36 @@
+; Title: i8253 Driver 
+; Author: Luke LaCasse
+; Date: June 18, 2021
+; Description: TODO
+
+#CODE DRIVER_8253, *, *
+
+_8253 equ $2000  ; Location of chip in memory
+
+; Counter/Timer Write Control Word
+CTWCW:
+  ld hl, _8253 + $0003  ; hl points to cw reg
+  ld (hl), b            ; write cw to 8253
+  ret
+
+; Counter/Timer 0 Load Count Value
+CT0LCV:
+  ld hl, _8253
+  ld (hl), c
+  ld (hl), b
+  ret
+
+; Counter/Timer 1 Load Count Value
+CT1LCV:
+  ld hl, _8253 + $0001
+  ld (hl), c
+  ld (hl), b
+  ret
+
+; Counter/Timer 2 Load Count Value
+CT2LCV:
+  ld hl, _8253 + $0002
+  ld (hl), c
+  ld (hl), b
+  ret
+  

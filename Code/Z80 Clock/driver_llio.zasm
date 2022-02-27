@@ -1,0 +1,100 @@
+; Title: LLIO Clock Display Driver
+; Author: Luke LaCasse
+; Date: 6/9/21
+; Description: TODO
+
+#CODE DRIVER_LLIO_DISPLAY, *, *  ; Append to Previous Block. Code Size: 1kB
+
+_8255 equ $3000
+
+
+; Shift Left Nibble in A
+; Input:  A [X][Display Address]
+; Output: A [Display Address][$00]
+SLNA:
+  add a,a  ; Use add instead of
+  add a,a  ; SLA; much faster
+  add a,a  ; SLA part of extended
+  add a,a  ; 8080a instruction set
+  ret
+
+
+; Format data to be read by LLIO Display Module
+; Input:  BC  [Address][Data]
+; Output: A [Address][Data] 
+FDATA:
+  ld a,c
+  and 00001111b  ; Mask Top 4 bits of Disp. Data
+  ld c,a
+  ld a,b         ; Load Disp. Address into a
+  call SLNA      ; Shift Address nibble to top of byte
+  OR c           ; Combine address and data
+  ret
+
+; Send Data to 8255 PPI Port A
+; Input: A [Display Address][Display Data]
+; Uses: HL Register
+; Output: Sends data into Port A
+PORTA:
+  push hl
+  ld hl, _8255  ; Write formated display data 
+  ld (hl), a    ; to port A.
+  or 11110000b  ; Deselect display CS
+  ld (hl), a    ;
+  nop           ; Allow for data to stabilize
+  pop hl
+  ret
+
+; Blank LLIO Display Module
+; Input: None
+; Uses: BC, DE
+; Output: None
+BLANK_LLIO:
+  push bc
+  push de       ; Save DE reg because it is used
+  ld d, $06
+B_LOOP:         ; Write from Disp 5 to 0
+  dec d
+  ld b, d       ; Screen Address = d 
+  ld c, $0F     ; Load blank screen data 
+  call WR_LLIO
+  sub a         ; A = 0
+  cp d          ; Check if D == 0
+  jp nz, B_LOOP ; Yes: Break No: Break 
+  pop de        ; Restore used registers 
+  pop bc
+  ret
+
+; Multi-Byte Write to LLIO Display Module
+; Input: HL [Top Byte of 3 Byte 6-Digit BCD String]
+;        *** Assumes Valid Display Data ***
+; Uses: DE
+; Output: Display BCD String on LLIO Display
+MBWR_LLIO:
+  push de
+  ld d, $06         ; Count = 6 Displays
+MBWR_LOOP
+  dec d
+  ld b, d           ; Load Right Disp Address 
+  ld c, (hl)        ; Load Rigth Disp Data from Memory
+  call WR_LLIO
+  dec d
+  ld b, d
+  ld c, (hl)        ; Load Left Disp Data from Memory 
+  rr c              ; Shift Left Disp Data to Lower 4 bits
+  rr c
+  rr c
+  rr c 
+  call WR_LLIO      ; Write Left Display from Memory
+  dec hl            ; Address--
+  sub a             ; A = 0
+  cp d              ; Check if d == 0
+  jp nz, MBWR_LOOP  ; Yes: Break No: Loop
+  pop de            ; Restore used registers
+  ret
+  
+
+WR_LLIO:
+  call FDATA
+  call PORTA
+  ret  

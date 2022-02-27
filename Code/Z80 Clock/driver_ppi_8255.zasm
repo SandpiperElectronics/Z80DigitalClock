@@ -1,0 +1,20 @@
+; Title: i8255 Driver 
+; Author: Luke LaCasse
+; Date: 6/9/21
+; Description: TODO
+
+#code DRIVER_PPI_8255, *, *
+
+_8255 equ $3000
+
+
+;PPIMSET
+;[PPI Mode Set]
+;-----------------------
+;Input: Reg a; contains 8255 Mode
+;Output: None
+PPIMODESET:
+  ld hl, _8255 + $0003
+  ld (hl), b 
+  ret
+
